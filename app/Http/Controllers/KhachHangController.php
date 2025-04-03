@@ -149,8 +149,9 @@ class KhachHangController extends Controller
             'user'    => $Account_Login
         ]);
     }
-    // kích hoạt tk
-    public function activateAccount()
+
+    // kiem tra khách hàng
+    public function checkCustomer()
     {
         $Account_Login   = Auth::guard('sanctum')->user();
         if ($Account_Login && $Account_Login instanceof \App\Models\KhachHang) {
@@ -164,6 +165,9 @@ class KhachHangController extends Controller
             ]);
         }
     }
+
+    // kích hoạt tk khách hàng
+    public function activateAccount() {}
     public function getDataProfile()
     {
         $Account_Login   = Auth::guard('sanctum')->user();
@@ -186,6 +190,69 @@ class KhachHangController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => "Xóa tài khoản không thành công!"
+            ]);
+        }
+    }
+
+    // đổi trạng thái tài khoản khách hàng
+    public function changeStatus(Request $request)
+    {
+        $khach_hang = KhachHang::where('id', $request->id)->first();
+
+        if ($khach_hang) {
+            if ($khach_hang->trang_thai == 0) {
+                $khach_hang->trang_thai == 1;
+                $khach_hang->save();
+                return response()->json([
+                    'status' => true,
+                    'message' => "Đã kích hoạt tài khoản thành công!"
+                ]);
+            }
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => "Đã xảy ra lỗi khi kích hoạt tài khoản!"
+            ]);
+        }
+    }
+    // update tài khoản khách hàng ( admin)
+    public function update(Request $request)
+    {
+        $khach_hang = KhachHang::where('id', $request->id)->first();
+        if ($khach_hang) {
+            $khach_hang->update([
+                'ho_ten'         => $request->ho_ten,
+                'so_dien_thoai'     => $request->so_dien_thoai,
+                'email'             => $request->email,
+                'dia_chi'           => $request->dia_chi,
+                'vi_tien'           => $request->vi_tien,
+            ]);
+            return response()->json([
+                'status' => true,
+                'message' => "Đã cập nhật tài khoản thành công!"
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => "Có lỗi xảy ra khi cập nhật!"
+            ]);
+        }
+    }
+
+    // delete tài khoản khách hàng ( admin)
+    public function delete(Request $request)
+    {
+        $khach_hang = KhachHang::where('id', $request->id)->first();
+        if ($khach_hang) {
+            $khach_hang->delete();
+            return response()->json([
+                'status' => true,
+                'message' => "Bạn đã xóa tài khoản thành công!"
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => "Có lỗi xảy ra khi xóa tài khoản!"
             ]);
         }
     }
