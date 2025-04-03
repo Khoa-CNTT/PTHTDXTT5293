@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\KhachHangController;
+use App\Http\Controllers\MaGiamGiaController;
 use App\Http\Middleware\KhachHangMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,3 +27,11 @@ Route::get('/admin/khach-hang/data', [KhachHangController::class, 'getDataUser']
 Route::post('/admin/khach-hang/doi-trang-thai', [KhachHangController::class, 'changeStatus'])->middleware("AdminMiddle");
 Route::post('/admin/khach-hang/update', [KhachHangController::class, 'update'])->middleware("AdminMiddle");
 Route::post('/admin/khach-hang/delete', [KhachHangController::class, 'delete'])->middleware("AdminMiddle");
+
+// Mã giảm giá
+Route::get('/admin/ma-giam-gia/data', [MaGiamGiaController::class, 'getData'])->middleware("AdminMiddle");
+Route::get('/ma-giam-gia/kiem-tra', [MaGiamGiaController::class, 'checkCode']);
+Route::post('/admin/ma-giam-gia/create', [MaGiamGiaController::class, 'createCode'])->middleware("AdminMiddle");
+Route::post('/admin/ma-giam-gia/update', [MaGiamGiaController::class, 'updateCode'])->middleware("AdminMiddle");
+Route::post('/admin/ma-giam-gia/delete', [MaGiamGiaController::class, 'deleteCode'])->middleware("AdminMiddle");
+Route::post('/admin/ma-giam-gia/doi-trang-thai', [MaGiamGiaController::class, 'changeCode'])->middleware("AdminMiddle");
