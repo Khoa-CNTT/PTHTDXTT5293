@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\KhachHangController;
 use App\Http\Controllers\MaGiamGiaController;
+use App\Http\Controllers\TaiXeController;
 use App\Http\Middleware\KhachHangMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +29,17 @@ Route::post('/admin/khach-hang/doi-trang-thai', [KhachHangController::class, 'ch
 Route::post('/admin/khach-hang/update', [KhachHangController::class, 'update'])->middleware("AdminMiddle");
 Route::post('/admin/khach-hang/delete', [KhachHangController::class, 'delete'])->middleware("AdminMiddle");
 
-// Mã giảm giá
+// tài xế
+Route::get('/admin/tai-xe/data', [TaiXeController::class, 'getData'])->middleware("AdminMiddle");
+Route::post('/admin/tai-xe/update', [TaiXeController::class, 'updateAcount'])->middleware("AdminMiddle");
+Route::post('/admin/tai-xe/delete', [TaiXeController::class, 'deleteAcount'])->middleware("AdminMiddle");
+Route::post('/admin/tai-xe/doi-tinh-trang', [TaiXeController::class, 'changeDriver'])->middleware("AdminMiddle");
+
+//------------- Tài xế --------------------------
+Route::post('/tai-xe/dang-ky', [TaiXeController::class, 'LogIn']);
+Route::post('/tai-xe/dang-nhap', [TaiXeController::class, 'registerDriver']);
+
+//----------------------- Mã giảm giá--------------------
 Route::get('/admin/ma-giam-gia/data', [MaGiamGiaController::class, 'getData'])->middleware("AdminMiddle");
 Route::get('/ma-giam-gia/kiem-tra', [MaGiamGiaController::class, 'checkCode']);
 Route::post('/admin/ma-giam-gia/create', [MaGiamGiaController::class, 'createCode'])->middleware("AdminMiddle");

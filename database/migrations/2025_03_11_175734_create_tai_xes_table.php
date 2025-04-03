@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('bien_so');
             $table->string('bang_lai_xe');
             $table->string('thong_tin_khach');
+            $table->string('ngan_hang')->nullable();
             $table->boolean('trang_thai')->default(true);
             $table->timestamps();
         });
