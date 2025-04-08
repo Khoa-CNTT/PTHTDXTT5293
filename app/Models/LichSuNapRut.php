@@ -8,8 +8,12 @@ class LichSuNapRut extends Model
 {
     protected $table = 'lich_su_nap_ruts';
     protected $fillable = [
+        'user_id',
+        'user_type',
         'so_tien',
         'loai_giao_dich',
+        'ngay_nap',
+        'hinh_thuc',
         'trang_thai',
     ];
 }

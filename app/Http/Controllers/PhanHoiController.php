@@ -4,7 +4,4 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class PhanHoiController extends Controller
-{
-    //
-}
+class PhanHoiController extends Controller {}

@@ -15,11 +15,11 @@ return new class extends Migration
             $table->string('so_dien_thoai');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('dia_chi')->nullable();
             $table->string('cccd')->unique();
             $table->string('loai_xe');
             $table->string('bien_so');
             $table->string('bang_lai_xe');
-            $table->string('thong_tin_khach');
             $table->string('ngan_hang')->nullable();
             $table->boolean('trang_thai')->default(true);
             $table->timestamps();

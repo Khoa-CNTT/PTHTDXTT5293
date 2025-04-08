@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('danh_gias', function (Blueprint $table) {
             $table->id();
             $table->string('so_sao');
-            $table->string('binh_luạn');
+            $table->string('binh_luan');
             $table->timestamps();
         });
     }

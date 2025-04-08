@@ -10,9 +10,13 @@ return new class extends Migration
     {
         Schema::create('lich_su_nap_ruts', function (Blueprint $table) {
             $table->id();
-            $table->string("so_tien");
-            $table->string("loai_giao_dich");
-            $table->integer("trang_thai");
+            $table->foreignId('user_id'); // Khóa ngoại liên kết bảng users
+            $table->enum('user_type', ['khach_hang', 'tai_xe']); // Loại người dùng
+            $table->decimal('so_tien', 15, 2); // Số tiền chính xác
+            $table->enum('loai_giao_dich', ['Nạp tiền', 'Rút tiền']); // Loại giao dịch
+            $table->string('hinh_thuc')->nullable(); // Hình thức giao dịch (chuyển khoản, tiền mặt, v.v.)
+            $table->integer('trang_thai'); // Trạng thái (0: chờ xử lý, 1: đã xử lý,...)
+            $table->timestamp('ngay_giao_dich')->nullable(); // Ngày giờ giao dịch
             $table->timestamps();
         });
     }

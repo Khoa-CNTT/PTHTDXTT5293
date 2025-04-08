@@ -45,13 +45,15 @@ class TaiXeController extends Controller
     public function registerDriver(Request $request)
     {
         $TaiXe = TaiXe::create([
-            'ho_ten'                => $request->ho_ten,
-            'so_dien_thoai'         => $request->so_dien_thoai,
-            'email'                 => $request->email,
-            'password'              => bcrypt($request->password),
-            'dia_chi'                 => $request->dia_chi,
-            'loai_xe'                 => $request->loai_xe,
-            'bien_so'                 => $request->bien_so,
+            'ho_ten'        => $request->ho_ten,
+            'so_dien_thoai' => $request->so_dien_thoai,
+            'email'         => $request->email,
+            'password'      => bcrypt($request->password),
+            'dia_chi'       => $request->dia_chi,
+            'cccd'          => $request->cccd,
+            'loai_xe'       => $request->loai_xe,
+            'bien_so'       => $request->bien_so,
+            'bang_lai_xe'   => $request->bang_lai_xe
 
         ]);
         return response()->json([
@@ -94,7 +96,6 @@ class TaiXeController extends Controller
             'loai_xe'               => $request->loai_xe,
             'bien_so'               => $request->bien_so,
             'bang_lai_xe'           => $request->bang_lai_xe,
-            'thong_tin_khach'       => $request->thong_tin_khach,
             'ngan_hang'            => $request->ngan_hang,
         ]);
         return response()->json([
@@ -111,5 +112,21 @@ class TaiXeController extends Controller
             'status' => true,
             'message' => "Đã xóa tài xế" . $request->ho_ten . " thành công.",
         ]);
+    }
+
+    // kiểm tra tài khoản tài xế
+    public function checkDriver()
+    {
+        $Account_Login   = Auth::guard('sanctum')->user();
+        if ($Account_Login && $Account_Login instanceof \App\Models\TaiXe) {
+            return response()->json([
+                'status'    =>  true
+            ]);
+        } else {
+            return response()->json([
+                'status'    =>  false,
+                'message'   =>  'Bạn cần đăng nhập hệ thống trước'
+            ]);
+        }
     }
 }
