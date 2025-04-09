@@ -12,9 +12,10 @@ return new class extends Migration
         Schema::create('quan_tri_viens', function (Blueprint $table) {
             $table->id();
             $table->string('ho_ten');
-            $table->string('mat_khau');
+            $table->string('password');
             $table->string('email');
             $table->string('so_dien_thoai');
+            $table->integer('tinh_trang');
             $table->timestamps();
         });
     }

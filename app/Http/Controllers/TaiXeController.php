@@ -67,11 +67,7 @@ class TaiXeController extends Controller
         $TaiXe = TaiXe::where('id', $request->id)->first();
 
         if ($TaiXe) {
-            if ($TaiXe) {
-                $TaiXe->tinh_trang == 0;
-            } else {
-                $TaiXe->tinh_trang == 1;
-            }
+            $TaiXe->trang_thai = !$TaiXe->trang_thai;
             $TaiXe->save();
             return response()->json([
                 'status'    => true,
@@ -85,7 +81,7 @@ class TaiXeController extends Controller
         }
     }
 
-    // update  tài xế (admin)
+    // update  tài xế
     public function updateAcount(Request $request)
     {
         $TaiXe = TaiXe::find($request->id)->update([
@@ -111,6 +107,47 @@ class TaiXeController extends Controller
         return response()->json([
             'status' => true,
             'message' => "Đã xóa tài xế" . $request->ho_ten . " thành công.",
+        ]);
+    }
+
+    // cập nhật tài xế (admin)
+    public function update(Request $request)
+    {
+        $Account_Login = Auth::guard('sanctum')->user();
+        TaiXe::find($request->id)->update([
+            'ho_ten'                => $request->ho_ten,
+            'so_dien_thoai'         => $request->so_dien_thoai,
+            'email'                 => $request->email,
+            'cccd'                  => $request->cccd,
+            'loai_xe'               => $request->loai_xe,
+            'bien_so'               => $request->bien_so,
+            'bang_lai_xe'           => $request->bang_lai_xe,
+            'ngan_hang'            => $request->ngan_hang,
+
+        ]);
+        return response()->json([
+            'status' => true,
+            'message' => "Cập nhật thông tin tài xế thành công!",
+        ]);
+    }
+    // thêm tài xế ( admin ) -- có thể bỏ k dùng
+    public function create(Request $request)
+    {
+        $Account_Login = Auth::guard('sanctum')->user();
+        TaiXe::create([
+            'ho_ten'                => $request->ho_ten,
+            'so_dien_thoai'         => $request->so_dien_thoai,
+            'email'                 => $request->email,
+            'cccd'                  => $request->cccd,
+            'loai_xe'               => $request->loai_xe,
+            'bien_so'               => $request->bien_so,
+            'bang_lai_xe'           => $request->bang_lai_xe,
+            'ngan_hang'            => $request->ngan_hang,
+
+        ]);
+        return response()->json([
+            'status' => true,
+            'message' => "Đã tạo mới tài xế " . $request->ho_ten . " thành công.",
         ]);
     }
 

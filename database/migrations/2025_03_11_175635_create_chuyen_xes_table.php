@@ -11,11 +11,15 @@ return new class extends Migration
     {
         Schema::create('chuyen_xes', function (Blueprint $table) {
             $table->id();
-            $table->string("dia_diem_don");
-            $table->string("dia_diem_den");
-            $table->string("loai_xe");
-            $table->string("gia_tien");
-            $table->integer("trang_thai");
+            $table->unsignedBigInteger('KhachHang_id');
+            $table->unsignedBigInteger('TaiXe_id')->nullable();
+            $table->unsignedBigInteger('Ma_id')->nullable(); // Nếu không bắt buộc có mã giảm giá
+            $table->string('DiaDiemDon');
+            $table->string('DiaDiemDen');
+            $table->string('LoaiXe');
+            $table->decimal('GiaTien', 10, 2);
+            $table->dateTime('ThoiGian');
+            $table->string('TrangThai')->default('Chưa đặt');
             $table->timestamps();
         });
     }

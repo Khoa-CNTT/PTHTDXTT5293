@@ -8,10 +8,14 @@ class ChuyenXe extends Model
 {
     protected $table = 'chuyen_xes';
     protected $fillable = [
-        'dia_diem_don',
-        'dia_diem_den',
-        'loai_xe',
-        'gia_tien',
-        'trang_thai',
+        'KhachHang_id',
+        'TaiXe_id',
+        'Ma_id',
+        'DiaDiemDon',
+        'DiaDiemDen',
+        'LoaiXe',
+        'GiaTien',
+        'ThoiGian',
+        'TrangThai',
     ];
 }

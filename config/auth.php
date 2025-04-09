@@ -33,6 +33,10 @@ return [
             'driver'    => 'session',
             'provider'  => 'taixeprovider',
         ],
+        'nhanvien' => [
+            'driver'    => 'session',
+            'provider'  => 'nhanvienprovider',
+        ],
     ],
 
 
@@ -49,6 +53,10 @@ return [
         'taixeprovider' => [
             'driver'    => 'eloquent',
             'model'     => \App\Models\TaiXe::class,
+        ],
+        'nhanvienprovider' => [
+            'driver'    => 'eloquent',
+            'model'     => \App\Models\QuanTriVien::class,
         ],
         // 'users' => [
         //     'driver' => 'database',

@@ -197,21 +197,20 @@ class KhachHangController extends Controller
     // đổi trạng thái tài khoản khách hàng
     public function changeStatus(Request $request)
     {
+
         $khach_hang = KhachHang::where('id', $request->id)->first();
 
         if ($khach_hang) {
-            if ($khach_hang->trang_thai == 0) {
-                $khach_hang->trang_thai == 1;
-                $khach_hang->save();
-                return response()->json([
-                    'status' => true,
-                    'message' => "Đã kích hoạt tài khoản thành công!"
-                ]);
-            }
+            $khach_hang->trang_thai = !$khach_hang->trang_thai;
+            $khach_hang->save();
+            return response()->json([
+                'status' => true,
+                'message' => "Đã đổi trạng thái tài khoản thành công!"
+            ]);
         } else {
             return response()->json([
                 'status' => false,
-                'message' => "Đã xảy ra lỗi khi kích hoạt tài khoản!"
+                'message' => "Đã xảy ra lỗi khi thay đổi trạng thái tài khoản!"
             ]);
         }
     }

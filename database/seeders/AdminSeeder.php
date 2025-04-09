@@ -13,19 +13,17 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('nhan_viens')->delete();
+        DB::table('quan_tri_viens')->delete();
 
-        DB::table('nhan_viens')->truncate();
+        DB::table('quan_tri_viens')->truncate();
 
-        DB::table('nhan_viens')->insert([
+        DB::table('quan_tri_viens')->insert([
             [
-                'email'             =>  'canhpro@gmail.com',
+                'email'             =>  'canhpro1@gmail.com',
                 'password'          =>  bcrypt('123456'),
-                'ho_va_ten'         =>  'Cảnh',
+                'ho_ten'         =>  'Cảnh',
                 'so_dien_thoai'     =>  '0383565535',
-                'dia_chi'           =>  'Đà Nẵng',
                 'tinh_trang'        =>  1,
-                'id_quyen'          =>  1,
             ],
         ]);
     }
