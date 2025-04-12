@@ -33,9 +33,9 @@ return [
             'driver'    => 'session',
             'provider'  => 'taixeprovider',
         ],
-        'nhanvien' => [
+        'admin' => [
             'driver'    => 'session',
-            'provider'  => 'nhanvienprovider',
+            'provider'  => 'adminprovider',
         ],
     ],
 
@@ -54,7 +54,7 @@ return [
             'driver'    => 'eloquent',
             'model'     => \App\Models\TaiXe::class,
         ],
-        'nhanvienprovider' => [
+        'adminprovider' => [
             'driver'    => 'eloquent',
             'model'     => \App\Models\QuanTriVien::class,
         ],

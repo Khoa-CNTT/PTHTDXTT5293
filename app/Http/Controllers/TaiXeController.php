@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaiXeDangKyRequest;
+use App\Http\Requests\TaiXeDangNhapRequest;
 use App\Models\TaiXe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +20,7 @@ class TaiXeController extends Controller
     }
 
     // đăng nhập
-    public function LogIn(Request $request)
+    public function LogIn(TaiXeDangNhapRequest $request)
     {
         $Check_Taixe = Auth::guard("taixe")->attempt([
             'email'     => $request->email,
@@ -42,7 +44,7 @@ class TaiXeController extends Controller
     }
 
     // đăng ký
-    public function registerDriver(Request $request)
+    public function registerDriver(TaiXeDangKyRequest $request)
     {
         $TaiXe = TaiXe::create([
             'ho_ten'        => $request->ho_ten,
@@ -53,7 +55,8 @@ class TaiXeController extends Controller
             'cccd'          => $request->cccd,
             'loai_xe'       => $request->loai_xe,
             'bien_so'       => $request->bien_so,
-            'bang_lai_xe'   => $request->bang_lai_xe
+            'bang_lai_xe'   => $request->bang_lai_xe,
+            'ngan_hang'   => $request->ngan_hang,
 
         ]);
         return response()->json([
@@ -81,7 +84,7 @@ class TaiXeController extends Controller
         }
     }
 
-    // update  tài xế
+    // update  tài xế ( profile)
     public function updateAcount(Request $request)
     {
         $TaiXe = TaiXe::find($request->id)->update([
@@ -131,25 +134,25 @@ class TaiXeController extends Controller
         ]);
     }
     // thêm tài xế ( admin ) -- có thể bỏ k dùng
-    public function create(Request $request)
-    {
-        $Account_Login = Auth::guard('sanctum')->user();
-        TaiXe::create([
-            'ho_ten'                => $request->ho_ten,
-            'so_dien_thoai'         => $request->so_dien_thoai,
-            'email'                 => $request->email,
-            'cccd'                  => $request->cccd,
-            'loai_xe'               => $request->loai_xe,
-            'bien_so'               => $request->bien_so,
-            'bang_lai_xe'           => $request->bang_lai_xe,
-            'ngan_hang'            => $request->ngan_hang,
+    // public function create(Request $request)
+    // {
+    //     $Account_Login = Auth::guard('sanctum')->user();
+    //     TaiXe::create([
+    //         'ho_ten'                => $request->ho_ten,
+    //         'so_dien_thoai'         => $request->so_dien_thoai,
+    //         'email'                 => $request->email,
+    //         'cccd'                  => $request->cccd,
+    //         'loai_xe'               => $request->loai_xe,
+    //         'bien_so'               => $request->bien_so,
+    //         'bang_lai_xe'           => $request->bang_lai_xe,
+    //         'ngan_hang'            => $request->ngan_hang,
 
-        ]);
-        return response()->json([
-            'status' => true,
-            'message' => "Đã tạo mới tài xế " . $request->ho_ten . " thành công.",
-        ]);
-    }
+    //     ]);
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => "Đã tạo mới tài xế " . $request->ho_ten . " thành công.",
+    //     ]);
+    // }
 
     // kiểm tra tài khoản tài xế
     public function checkDriver()

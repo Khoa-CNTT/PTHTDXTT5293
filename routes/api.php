@@ -7,6 +7,7 @@ use App\Http\Controllers\LichSuNapTienController;
 use App\Http\Controllers\MaGiamGiaController;
 use App\Http\Controllers\QuanTriVienController;
 use App\Http\Controllers\TaiXeController;
+use App\Http\Controllers\ViTienController;
 use App\Http\Middleware\KhachHangMiddleware;
 use App\Models\ChuyenXe;
 use App\Models\LichSuNapRut;
@@ -34,9 +35,16 @@ Route::get('/khach-hang/get-data', [ChuyenXeController::class, 'getData'])->midd
 Route::get('/khach-hang/xem-chi-tiet-don', [ChuyenXeController::class, 'show'])->middleware("KhachHangMiddle");
 Route::post('/khach-hang/huy-don', [ChuyenXeController::class, 'deleteOrder'])->middleware("KhachHangMiddle");
 
+Route::get('/khach-hang/lich-su-don-hang', [ChuyenXeController::class, 'lichSuKhachHang'])->middleware("KhachHangMiddle");
+
+Route::get('/khach-hang/hien-thi-so-du', [ViTienController::class, 'getSoDu'])->middleware("KhachHangMiddle");
+Route::post('/khach-hang/nap-tien', [LichSuNapTienController::class, 'store'])->middleware("KhachHangMiddle");
+Route::post('/khach-hang/rut-tien', [LichSuNapTienController::class, 'drawMoney'])->middleware("KhachHangMiddle");
+
 
 
 //------------- Admin --------------------------
+Route::get('/kiem-tra-tai-khoan-admin', [QuanTriVienController::class, 'checkAdmin']);
 Route::post('/admin/dang-nhap', [QuanTriVienController::class, 'logIn']);
 // admin
 Route::get('/admin/get-data', [ChuyenXeController::class, 'getAllOrders'])->middleware("AdminMiddle");
@@ -55,12 +63,12 @@ Route::get('/admin/tai-xe/data', [TaiXeController::class, 'getData'])->middlewar
 Route::post('/admin/tai-xe/doi-tinh-trang', [TaiXeController::class, 'changeDriver'])->middleware("AdminMiddle");
 Route::post('/admin/tai-xe/delete-tai-khoan', [TaiXeController::class, 'deleteAcount'])->middleware("AdminMiddle");
 Route::post('/admin/tai-xe/cap-nhat-tai-khoan', [TaiXeController::class, 'update'])->middleware("AdminMiddle");
-Route::post('/admin/tai-xe/them-tai-khoan', [TaiXeController::class, 'create'])->middleware("AdminMiddle");
+// Route::post('/admin/tai-xe/them-tai-khoan', [TaiXeController::class, 'create'])->middleware("AdminMiddle");
 
 
 
 //----------------------- Tài xế --------------------------
-Route::get('/kiem-tra-tai-khoan-tai-xe', [KhachHangController::class, 'checkDriver']);
+Route::get('/kiem-tra-tai-khoan-tai-xe', [TaiXeController::class, 'checkDriver']);
 Route::post('/tai-xe/dang-ky', [TaiXeController::class, 'registerDriver']);
 Route::post('/tai-xe/dang-nhap', [TaiXeController::class, 'logIn']);
 Route::post('/tai-xe/update-tai-khoan', [TaiXeController::class, 'updateAcount'])->middleware("TaiXeMiddle");

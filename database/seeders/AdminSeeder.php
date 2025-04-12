@@ -19,7 +19,7 @@ class AdminSeeder extends Seeder
 
         DB::table('quan_tri_viens')->insert([
             [
-                'email'             =>  'canhpro1@gmail.com',
+                'email'             =>  'canhpro123@gmail.com',
                 'password'          =>  bcrypt('123456'),
                 'ho_ten'         =>  'Cảnh',
                 'so_dien_thoai'     =>  '0383565535',

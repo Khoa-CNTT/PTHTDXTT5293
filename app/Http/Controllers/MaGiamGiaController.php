@@ -88,9 +88,9 @@ class MaGiamGiaController extends Controller
 
         if ($MaGiamGia) {
             if ($MaGiamGia->tinh_trang == 0) {
-                $MaGiamGia->tinh_trang == 1;
+                $MaGiamGia->tinh_trang = 1;
             } else {
-                $MaGiamGia->tinh_trang == 0;
+                $MaGiamGia->tinh_trang = 0;
             }
             $MaGiamGia->save();
 

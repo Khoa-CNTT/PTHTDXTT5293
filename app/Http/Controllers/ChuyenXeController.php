@@ -32,13 +32,18 @@ class ChuyenXeController extends Controller
 
         // Tạo chuyến xe mới
         $chuyenXe = ChuyenXe::create([
-            'KhachHang_id'   => $Account_Login->id,
-            'DiaDiemDon'     => $request->DiaDiemDon,
-            'DiaDiemDen'     => $request->DiaDiemDen,
-            'LoaiXe'         => $request->LoaiXe,
-            'GiaTien'        => $request->GiaTien,
-            'ThoiGian'       => now(),
-            'TrangThai'      => 'Chờ xác nhận',
+            'KhachHang_id'       => $Account_Login->id,
+            'TaiXe_id'           => $request->TaiXe_id,
+            'TaiXe'                 => $request->TaiXe,
+            'DiaDiemDon'         => $request->DiaDiemDon,
+            'DiaDiemDen'         => $request->DiaDiemDen,
+            'LoaiXe'             => $request->LoaiXe,
+            'GiaTien'            => $request->GiaTien,
+            'BienSo'            => $request->BienSo,
+            'SoKm'            => $request->SoKm,
+            'HinhThucThanhToan'  => $request->HinhThucThanhToan,
+            'ThoiGian'           => now(),
+            'TrangThai'          => 'Chờ xác nhận',
         ]);
 
         return response()->json([
@@ -313,6 +318,44 @@ class ChuyenXeController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Cảm ơn bạn đã đánh giá tài xế.'
+        ]);
+    }
+
+    // lích sử chuyến xe
+    public function lichSuKhachHang(Request $request)
+    {
+        $user = Auth::guard('sanctum')->user();
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn chưa đăng nhập!.',
+            ]);
+        }
+
+        $dsChuyenXe = ChuyenXe::where('KhachHang_id', $user->id)
+            ->orderBy('ThoiGian', 'desc')
+            ->get();
+
+        // Format lại dữ liệu để gửi về FE
+        $data = $dsChuyenXe->map(function ($item) {
+            return [
+                'ThoiGian'           => $item->ThoiGian,
+                'DiaDiemDon'         => $item->DiaDiemDon,
+                'DiaDiemDen'         => $item->DiaDiemDen,
+                'LoaiXe'             => $item->LoaiXe,
+                'GiaTien'            => $item->GiaTien,
+                'TrangThai'          => $item->TrangThai,
+                'SoKm'               => $item->SoKm,
+                'BienSo'             => $item->BienSo,
+                'TaiXe'              => $item->TaiXe,
+                'DanhGia'            => $item->DanhGia,
+                'HinhThucThanhToan'  => $item->HinhThucThanhToan,
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
         ]);
     }
 }

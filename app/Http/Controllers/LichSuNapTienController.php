@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LichSuNapRut;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class LichSuNapTienController extends Controller
 {
@@ -146,6 +147,113 @@ class LichSuNapTienController extends Controller
             'status' => true,
             'message' => 'Cập nhật trạng thái giao dịch thành công!',
             'data' => $lichSuNap
+        ]);
+    }
+
+
+    //////------------------ ví tiền -----------------------
+    // Lấy lịch sử nạp tiền của khách hàng
+    public function index()
+    {
+        $user = Auth::guard('sanctum')->user();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn chưa đăng nhập.',
+            ]);
+        }
+
+        $lichSu = LichSuNapRut::where('KhachHang_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $lichSu
+        ]);
+    }
+
+    // Ghi nhận 1 lần nạp tiền mới
+    public function store(Request $request)
+    {
+        $user = Auth::guard('sanctum')->user();
+        $so_tien = $request->so_tien;
+
+        if (!$so_tien || $so_tien <= 0) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Số tiền nạp không hợp lệ'
+            ]);
+        }
+
+        // Tạo mã giao dịch ngẫu nhiên
+        $ma_giao_dich = 'NAP' . strtoupper(uniqid());
+
+        // Giả lập tạo mã QR bằng dịch vụ miễn phí (thay sau này bằng của ngân hàng thật)
+        $link_thanhtoan = 'https://example.com/thanh-toan?ma=' . $ma_giao_dich . '&so_tien=' . $so_tien;
+
+        $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($link_thanhtoan);
+
+        // (Tùy chọn) Lưu giao dịch vào DB nếu muốn tracking
+        // NapTienModel::create([
+        //     'khach_hang_id' => $user->id,
+        //     'ma_giao_dich' => $ma_giao_dich,
+        //     'so_tien' => $so_tien,
+        //     'trang_thai' => 'cho_xac_nhan',
+        // ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Tạo mã QR thành công',
+            'qr_url' => $qr_url,
+            'ma_giao_dich' => $ma_giao_dich
+        ]);
+    }
+
+    // rút tiền
+    public function drawMoney(Request $request)
+    {
+        // Bước 1: Xác thực dữ liệu
+        $request->validate([
+            'so_tien'   => 'required|numeric|min:10000', // Số tiền tối thiểu 10.000
+            'mat_khau'  => 'required|string'
+        ]);
+
+        // Bước 2: Lấy người dùng hiện tại
+        $user = Auth::guard('khach_hang')->user();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn chưa đăng nhập!'
+            ]);
+        }
+
+        // Bước 3: Kiểm tra mật khẩu
+        if (!Hash::check($request->mat_khau, $user->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Mật khẩu không đúng!'
+            ]);
+        }
+
+        // Bước 4: Kiểm tra số dư
+        if ($user->so_du < $request->so_tien) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Số dư không đủ để rút tiền!'
+            ]);
+        }
+
+        // Bước 5: Trừ tiền và lưu lại
+        $user->so_du -= $request->so_tien;
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Rút tiền thành công!',
+            'so_du_moi' => $user->so_du
         ]);
     }
 }

@@ -3,27 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Hash;
-use App\Models\QuanTriVien;
 use Illuminate\Http\Request;
+use App\Models\QuanTriVien;
 use Illuminate\Support\Facades\Auth;
 
 class QuanTriVienController extends Controller
 {
     public function logIn(Request $request)
     {
-        $check  =   Auth::guard('nhanvien')->attempt([
+        $check  =   Auth::guard('admin')->attempt([
             'email'     => $request->email,
             'password'  => $request->password
         ]);
 
         if ($check) {
             // Lấy thông tin tài khoản đã đăng nhập thành công
-            $nhanVien  =   Auth::guard('nhanvien')->user(); // Lấy được thông tin nhân viên đã đăng nhập
+            $admin  =   Auth::guard('admin')->user(); // Lấy được thông tin nhân viên đã đăng nhập
 
             return response()->json([
                 'status'    => true,
                 'message'   => "Đã đăng nhập thành công!",
-                'token'     => $nhanVien->createToken('token_nhan_vien')->plainTextToken,
+                'token'     => $admin->createToken(name: 'token_admin')->plainTextToken,
             ]);
         } else {
             return response()->json([
@@ -33,11 +33,9 @@ class QuanTriVienController extends Controller
         }
     }
 
-    public function kiemTraAdmin()
+    public function checkAdmin()
     {
         $Account_Login   = Auth::guard('sanctum')->user();
-        // Khi đang đăng nhập ở đây có thể là: Khách Hàng, Đại Lý, Admin
-        // Chúng phải kiểm tra $tai_khoan_dang_dang_nhap có phải là tài khoản Admin/Nhân Viên hay kihoong?
         if ($Account_Login && $$Account_Login instanceof \App\Models\QuanTriVien) {
             return response()->json([
                 'status'    =>  true

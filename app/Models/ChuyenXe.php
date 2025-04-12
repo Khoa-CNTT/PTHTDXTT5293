@@ -11,11 +11,21 @@ class ChuyenXe extends Model
         'KhachHang_id',
         'TaiXe_id',
         'Ma_id',
+        'TaiXe',
+        'DichVu',
+        'HinhThucThanhToan',
         'DiaDiemDon',
         'DiaDiemDen',
         'LoaiXe',
         'GiaTien',
         'ThoiGian',
+        'BienSo',
+        'SoKm',
+        'DanhGia',
         'TrangThai',
     ];
+    public function taiXe()
+    {
+        return $this->belongsTo(TaiXe::class, 'TaiXe_id');
+    }
 }
