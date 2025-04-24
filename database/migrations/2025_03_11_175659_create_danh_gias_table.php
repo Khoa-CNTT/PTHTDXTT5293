@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('danh_gias', function (Blueprint $table) {
             $table->id();
-            $table->string('so_sao');
-            $table->string('binh_luan');
+            $table->string('so_sao')->comment('Số sao từ 1 đến 5');
+            $table->string('binh_luan')->nullable()->comment('Bình luận');
             $table->timestamps();
         });
     }

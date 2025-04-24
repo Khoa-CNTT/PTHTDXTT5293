@@ -30,7 +30,7 @@ class TaiXeDangNhapRequest extends FormRequest
     {
         return [
             'email.required' => 'Email không được để trống',
-            'email.exists' => 'Email không tồn tại',
+            'email.unique' => 'Email không tồn tại',
             'email.email' => 'Email không hợp lệ',
             'password.required' => 'Vui lòng nhập mật khẩu!',
             'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự!',

@@ -11,5 +11,8 @@ class ThanhToan extends Model
         'so_tien_thanh_toan',
         'phuong_thuc_thanh_toan',
         'trang_thai',
+        'ma_giam_gia',
+        'thoi_gian_thanh_toan',
+        'ma_giao_dich',
     ];
 }

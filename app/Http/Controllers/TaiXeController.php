@@ -44,7 +44,7 @@ class TaiXeController extends Controller
     }
 
     // đăng ký
-    public function registerDriver(TaiXeDangKyRequest $request)
+    public function registerDriver(Request $request)
     {
         $TaiXe = TaiXe::create([
             'ho_ten'        => $request->ho_ten,
@@ -133,6 +133,44 @@ class TaiXeController extends Controller
             'message' => "Cập nhật thông tin tài xế thành công!",
         ]);
     }
+    // đổi mật khẩu
+    public function changePassword(Request $request)
+    {
+        // kiểm tra tk đăng nhập
+        $Account_Login = Auth::guard('sanctum')->user();
+
+        if (!$Account_Login) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Người dùng chưa đăng nhập!'
+            ], 401);
+        }
+
+        // Kiểm tra mật khẩu cũ
+        if (!Hash::check($request->old_password, $Account_Login->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Mật khẩu cũ không chính xác!'
+            ]);
+        }
+
+        // Kiểm tra mật khẩu mới có trùng với mật khẩu hiện tại không
+        if (Hash::check($request->new_password, $Account_Login->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Mật khẩu mới không được trùng với mật khẩu hiện tại!'
+            ]);
+        }
+
+        // Cập nhật mật khẩu mới
+        $Account_Login->password = Hash::make($request->new_password);
+        $Account_Login->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Mật khẩu đã được thay đổi thành công!'
+        ]);
+    }
     // thêm tài xế ( admin ) -- có thể bỏ k dùng
     // public function create(Request $request)
     // {
@@ -168,5 +206,14 @@ class TaiXeController extends Controller
                 'message'   =>  'Bạn cần đăng nhập hệ thống trước'
             ]);
         }
+    }
+
+    // profile
+    public function getDataProfile()
+    {
+        $Account_Login   = Auth::guard('sanctum')->user();
+        return response()->json([
+            'data'    =>  $$Account_Login
+        ]);
     }
 }

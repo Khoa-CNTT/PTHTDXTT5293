@@ -7,6 +7,7 @@ use App\Http\Controllers\LichSuNapTienController;
 use App\Http\Controllers\MaGiamGiaController;
 use App\Http\Controllers\QuanTriVienController;
 use App\Http\Controllers\TaiXeController;
+use App\Http\Controllers\ThanhToanController;
 use App\Http\Controllers\ViTienController;
 use App\Http\Middleware\KhachHangMiddleware;
 use App\Models\ChuyenXe;
@@ -40,7 +41,9 @@ Route::get('/khach-hang/lich-su-don-hang', [ChuyenXeController::class, 'lichSuKh
 Route::get('/khach-hang/hien-thi-so-du', [ViTienController::class, 'getSoDu'])->middleware("KhachHangMiddle");
 Route::post('/khach-hang/nap-tien', [LichSuNapTienController::class, 'store'])->middleware("KhachHangMiddle");
 Route::post('/khach-hang/rut-tien', [LichSuNapTienController::class, 'drawMoney'])->middleware("KhachHangMiddle");
+Route::get('/khach-hang/lich-su-nap-rut', [LichSuNapTienController::class, 'index'])->middleware("KhachHangMiddle");
 
+Route::post('/khach-hang/thanh-toan', [ThanhToanController::class, 'Pay'])->middleware("KhachHangMiddle");
 
 
 //------------- Admin --------------------------
@@ -68,10 +71,13 @@ Route::post('/admin/tai-xe/cap-nhat-tai-khoan', [TaiXeController::class, 'update
 
 
 //----------------------- Tài xế --------------------------
+Route::get('/tai-xe/get-data/profile', [TaiXeController::class, 'getDataProfile']);
 Route::get('/kiem-tra-tai-khoan-tai-xe', [TaiXeController::class, 'checkDriver']);
 Route::post('/tai-xe/dang-ky', [TaiXeController::class, 'registerDriver']);
 Route::post('/tai-xe/dang-nhap', [TaiXeController::class, 'logIn']);
 Route::post('/tai-xe/update-tai-khoan', [TaiXeController::class, 'updateAcount'])->middleware("TaiXeMiddle");
+Route::post('/tai-xe/doi-mat-khau', [TaiXeController::class, 'changePassword'])->middleware("TaiXeMiddle");
+
 
 Route::post('/tai-xe/nhan-chuyen-xe', [ChuyenXeController::class, 'nhanChuyenXe'])->middleware("TaiXeMiddle");
 Route::get('/tai-xe/danh-sach-don-dat-xe', [ChuyenXeController::class, 'getDriverOrders'])->middleware("TaiXeMiddle");

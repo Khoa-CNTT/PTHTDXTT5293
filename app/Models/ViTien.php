@@ -8,6 +8,8 @@ class ViTien extends Model
 {
     protected $table = 'vi_tiens';
     protected $fillable = [
+        'user_id',
+        'taixe_id',
         'so_du',
     ];
 }

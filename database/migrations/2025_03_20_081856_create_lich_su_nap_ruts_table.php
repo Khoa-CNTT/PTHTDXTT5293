@@ -13,9 +13,10 @@ return new class extends Migration
             $table->foreignId('user_id'); // Khóa ngoại liên kết bảng users
             $table->enum('user_type', ['khach_hang', 'tai_xe']); // Loại người dùng
             $table->decimal('so_tien', 15, 2); // Số tiền chính xác
-            $table->enum('loai_giao_dich', ['Nạp tiền', 'Rút tiền']); // Loại giao dịch
+            $table->string('loai_giao_dich'); // Loại giao dịch
             $table->string('hinh_thuc')->nullable(); // Hình thức giao dịch (chuyển khoản, tiền mặt, v.v.)
-            $table->integer('trang_thai'); // Trạng thái (0: chờ xử lý, 1: đã xử lý,...)
+            $table->enum('trang_thai', ['chua_xac_nhan', 'da_xac_nhan', 'hoan_tat'])->default('chua_xac_nhan'); // Trạng thái (chưa xác nhận, đã xác nhận, hoàn tất)
+            //$table->integer('trang_thai'); // Trạng thái (0: chờ xử lý, 1: đã xử lý,...)
             $table->timestamp('ngay_giao_dich')->nullable(); // Ngày giờ giao dịch
             $table->timestamps();
         });

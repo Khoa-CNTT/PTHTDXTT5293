@@ -12,7 +12,7 @@ class LichSuNapRut extends Model
         'user_type',
         'so_tien',
         'loai_giao_dich',
-        'ngay_nap',
+        'ngay_giao_dich',
         'hinh_thuc',
         'trang_thai',
     ];
