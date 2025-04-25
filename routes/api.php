@@ -84,6 +84,11 @@ Route::get('/tai-xe/danh-sach-don-dat-xe', [ChuyenXeController::class, 'getDrive
 Route::post('/tai-xe/cap-nhat-don-dat-xe', [ChuyenXeController::class, 'updateStatus'])->middleware("TaiXeMiddle");
 Route::post('/tai-xe/xac-nhan-don-dat-xe', [ChuyenXeController::class, 'acceptOrder'])->middleware("TaiXeMiddle");
 
+Route::get('/tai-xe/hien-thi-so-du', [ViTienController::class, 'getSoDuDriver'])->middleware("TaiXeMiddle");
+Route::get('/tai-xe/lich-su-nap-rut', [LichSuNapTienController::class, 'getDataDriver'])->middleware("TaiXeMiddle");
+Route::post('/tai-xe/nap-tien', [LichSuNapTienController::class, 'recharge'])->middleware("TaiXeMiddle");
+Route::post('/tai-xe/rut-tien', [LichSuNapTienController::class, 'withDrawMoneyDriver'])->middleware("TaiXeMiddle");
+
 
 
 //----------------------- Mã giảm giá--------------------

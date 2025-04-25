@@ -257,7 +257,7 @@ class LichSuNapTienController extends Controller
         // Tìm ví tiền của người dùng
         $vi_tien = ViTien::where('user_id', $user->id)->first();
 
-        if (!$vi_tien || $vi_tien->so_du < $request->so_tien) {
+        if (!$vi_tien || $vi_tien->so_du - $request->so_tien < 5000) {
             return response()->json([
                 'status' => false,
                 'message' => 'Số dư không đủ để rút tiền!'
@@ -274,6 +274,8 @@ class LichSuNapTienController extends Controller
             'so_tien' => $request->so_tien,
             'loai_giao_dich' => $request->loai_giao_dich, // Ghi nhận là giao dịch rút tiền
             'ngay_giao_dich' => now(),
+            'ngan_hang' => $request->ngan_hang,
+            'so_tai_khoan' => $request->so_tai_khoan,
             'trang_thai' => 'hoan_tat', // Hoặc trạng thái khác nếu cần
         ]);
 
@@ -287,7 +289,130 @@ class LichSuNapTienController extends Controller
 
     // --------------------- ví tiền tài xế -----------------------------------
 
-    public function getDataTaiXe() {}
-    public function NapTien(Request $request) {}
-    public function RutTien(Request $request) {}
+    public function getDataDriver()
+    {
+        $driver = Auth::guard('sanctum')->user();
+
+        if (!$driver) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn chưa đăng nhập.',
+            ]);
+        }
+
+        $lichSu = LichSuNapRut::where('taixe_id', $driver->id)
+            ->whereIn('loai_giao_dich', ['nap_tien', 'rut_tien'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Lấy lịch sử giao dịch thành công.',
+            'data' => $lichSu
+        ]);
+    }
+    public function recharge(Request $request)
+    {
+        $driver = Auth::guard('sanctum')->user();
+        $so_tien = $request->so_tien;
+
+        // Kiểm tra xem số tiền có hợp lệ không
+        if (!$so_tien || $so_tien <= 5000) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Số tiền nạp không hợp lệ'
+            ]);
+        }
+
+        // Tạo mã giao dịch ngẫu nhiên
+        $ma_giao_dich = 'NAP' . strtoupper(uniqid()) . bin2hex(random_bytes(5));
+
+        // Giả lập tạo mã QR bằng dịch vụ miễn phí (thay sau này bằng của ngân hàng thật)
+        $link_thanhtoan = 'https://example.com/thanh-toan?ma=' . $ma_giao_dich . '&so_tien=' . $so_tien;
+        $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . urlencode($link_thanhtoan);
+
+        $lich_su_nap = LichSuNapRut::create([
+            'taixe_id' => $driver->id,
+            'user_type' => $request->user_type,
+            'so_tien' => $so_tien,
+            'loai_giao_dich' => $request->loai_giao_dich,
+            'ngay_giao_dich' => now(),
+            'hinh_thuc' => $request->hinh_thuc,
+            'trang_thai' => $request->trang_thai,
+        ]);
+
+
+        $vi_tien = ViTien::where('taixe_id', $driver->id)->first();
+        if ($vi_tien) {
+            $vi_tien->so_du += $so_tien;
+            $vi_tien->save();
+        } else {
+
+            ViTien::create([
+                'taixe_id' => $driver->id,
+                'so_du' => $so_tien,
+            ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Tạo mã QR thành công',
+            'qr_url' => $qr_url,
+            'ma_giao_dich' => $ma_giao_dich,
+            'lich_su_nap' => $lich_su_nap,
+            'so_du' => $vi_tien ? $vi_tien->so_du : $so_tien
+        ]);
+    }
+    public function withDrawMoneyDriver(Request $request)
+    {
+        // Lấy người dùng hiện tại
+        $driver = Auth::guard('sanctum')->user();
+
+        if (!$driver) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn chưa đăng nhập!'
+            ]);
+        }
+
+        // Kiểm tra mật khẩu
+        if (!Hash::check($request->mat_khau, $driver->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Mật khẩu không đúng!'
+            ]);
+        }
+
+        // Tìm ví tiền của người dùng
+        $vi_tien = ViTien::where('taixe_id', $driver->id)->first();
+
+        if (!$vi_tien || $vi_tien->so_du - $request->so_tien < 5000) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Số dư không đủ để rút tiền! Ví phải còn lại tối thiểu 5.000 VNĐ.'
+            ]);
+        }
+
+        // Trừ tiền và lưu lại
+        $vi_tien->so_du -= $request->so_tien;
+        $vi_tien->save();
+
+        // Lưu lịch sử giao dịch rút tiền
+        LichSuNapRut::create([
+            'taixe_id' => $driver->id,
+            'user_type' => 'tai_xe',
+            'so_tien' => $request->so_tien,
+            'loai_giao_dich' => $request->loai_giao_dich,
+            'ngay_giao_dich' => now(),
+            'ngan_hang' => $request->ngan_hang,
+            'so_tai_khoan' => $request->so_tai_khoan,
+            'trang_thai' => 'hoan_tat',
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Rút tiền thành công!',
+            'so_du' => $vi_tien->so_du
+        ]);
+    }
 }
