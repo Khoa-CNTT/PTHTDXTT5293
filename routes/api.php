@@ -51,7 +51,7 @@ Route::post('/admin/dang-nhap', [QuanTriVienController::class, 'logIn']);
 
 Route::post('/admin/khach-hang/kich-hoat-tai-khoan', [KhachHangController::class, 'activateAccount'])->middleware("AdminMiddle");
 Route::get('/admin/get-data', [ChuyenXeController::class, 'getAllOrders'])->middleware("AdminMiddle");
-Route::post('/admin/cap-nhat-don', [ChuyenXeController::class, 'adminUpdateStatus'])->middleware("AdminMiddle");
+Route::post('/admin/cap-nhat-don-dat-xe', [ChuyenXeController::class, 'updateOrder'])->middleware("AdminMiddle");
 Route::post('/admin/xoa-don-dat-xe', [ChuyenXeController::class, 'adminDeleteOrder'])->middleware("AdminMiddle");
 
 Route::get('/admin/nhan-vien/data', [QuanTriVienController::class, 'getData'])->middleware("NhanVienMiddle");
@@ -85,8 +85,8 @@ Route::post('/admin/tai-xe/delete-tai-khoan', [TaiXeController::class, 'deleteAc
 Route::post('/admin/tai-xe/cap-nhat-tai-khoan', [TaiXeController::class, 'update'])->middleware("AdminMiddle");
 // Route::post('/admin/tai-xe/them-tai-khoan', [TaiXeController::class, 'create'])->middleware("AdminMiddle");
 
-
-
+// chuyến xe
+Route::post('/admin/chuyen-xe/doi-trang-thai', [ChuyenXeController::class, 'changeStatus'])->middleware("AdminMiddle");
 //------------------------------ Tài xế --------------------------------------------
 Route::get('/tai-xe/get-data/profile', [TaiXeController::class, 'getDataProfile']);
 Route::get('/kiem-tra-tai-khoan-tai-xe', [TaiXeController::class, 'checkDriver']);

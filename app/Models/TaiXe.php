@@ -20,6 +20,7 @@ class TaiXe extends Authenticatable
         'loai_xe',
         'bien_so',
         'bang_lai_xe',
+        'dia_chi',
         //'thong_tin_khach',
         'ngan_hang',
         'trang_thai',

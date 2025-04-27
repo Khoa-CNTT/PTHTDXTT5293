@@ -18,7 +18,6 @@ class KhachHang extends Authenticatable
         'dia_chi',
         'hinh_anh',
         'password',
-        'vi_tien',
         'hash_reset',
         'trang_thai',
         'is_active',

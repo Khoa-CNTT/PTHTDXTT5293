@@ -95,6 +95,7 @@ class TaiXeController extends Controller
             'loai_xe'               => $request->loai_xe,
             'bien_so'               => $request->bien_so,
             'bang_lai_xe'           => $request->bang_lai_xe,
+            'dia_chi'           => $request->dia_chi,
             'ngan_hang'            => $request->ngan_hang,
         ]);
         return response()->json([

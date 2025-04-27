@@ -154,6 +154,52 @@ class ChuyenXeController extends Controller
         ]);
     }
 
+    // cập nhật đơn
+    public function updateOrder(Request $request)
+    {
+        $khach_hang = ChuyenXe::where('id', $request->id)->first();
+        if ($khach_hang) {
+            $khach_hang->update([
+                'ho_ten'            => $request->ho_ten,
+                'DiaDiemDon'        => $request->DiaDiemDon,
+                'DiaDiemDen'        => $request->DiaDiemDon,
+                'GiaTien'           => $request->GiaTien,
+                'BienSo'           => $request->BienSo,
+                'LoaiXe'           => $request->LoaiXe,
+                'SoKm'           => $request->SoKm,
+            ]);
+            return response()->json([
+                'status' => true,
+                'message' => "Đã cập nhật danh sách đơn đặt xe thành công!"
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => "Có lỗi xảy ra khi cập nhật!"
+            ]);
+        }
+    }
+    // đổi trạng thái tài khoản khách hàng
+    public function changeStatus(Request $request)
+    {
+
+        $khach_hang = ChuyenXe::where('id', $request->id)->first();
+
+        if ($khach_hang) {
+            $khach_hang->TrangThai = !$khach_hang->TrangThai;
+            $khach_hang->save();
+            return response()->json([
+                'status' => true,
+                'message' => "Đã đổi trạng thái đơn đặt xe thành công!"
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => "Đã xảy ra lỗi khi thay đổi trạng thái đơn đặt xe!"
+            ]);
+        }
+    }
+
 
     //------------------quản lý đơn hàng - tài xế------------------------------
     // lấy danh sách đơn hàng của tài xế
@@ -170,7 +216,7 @@ class ChuyenXeController extends Controller
 
         $donHang = ChuyenXe::where('TaiXe_id', $taixe->id)
             ->where('TrangThai', '!=', 'Đã hủy')
-            ->orderBy('ThoiGian', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return response()->json([
@@ -240,7 +286,7 @@ class ChuyenXeController extends Controller
         $user = Auth::guard('sanctum')->user();
 
         $dsDon = ChuyenXe::where('KhachHang_id', $user->id)
-            ->orderBy('ThoiGian', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return response()->json([
@@ -330,23 +376,19 @@ class ChuyenXeController extends Controller
         }
 
         $dsChuyenXe = ChuyenXe::where('KhachHang_id', $user->id)
-            ->orderBy('ThoiGian', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         // Format lại dữ liệu để gửi về FE
-        $data = $dsChuyenXe->map(function ($item) {
+        $data = $dsChuyenXe->map(function ($request) {
             return [
-                'ThoiGian'           => $item->ThoiGian,
-                'DiaDiemDon'         => $item->DiaDiemDon,
-                'DiaDiemDen'         => $item->DiaDiemDen,
-                'LoaiXe'             => $item->LoaiXe,
-                'GiaTien'            => $item->GiaTien,
-                'TrangThai'          => $item->TrangThai,
-                'SoKm'               => $item->SoKm,
-                'BienSo'             => $item->BienSo,
-                'TaiXe'              => $item->TaiXe,
-                'DanhGia'            => $item->DanhGia,
-                'HinhThucThanhToan'  => $item->HinhThucThanhToan,
+                'DiaDiemDon'         => $request->DiaDiemDon,
+                'DiaDiemDen'         => $request->DiaDiemDen,
+                'LoaiXe'             => $request->LoaiXe,
+                'GiaTien'            => $request->GiaTien,
+                'TrangThai'          => 0,
+                'SoKm'               => $request->SoKm,
+                'HinhThucThanhToan'  => $request->HinhThucThanhToan,
             ];
         });
 
