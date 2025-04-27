@@ -16,7 +16,7 @@ class LichSuNapRut extends Model
         'so_tai_khoan',
         'loai_giao_dich',
         'ngay_giao_dich',
-        'hinh_thuc',
+        //'hinh_thuc',
         'trang_thai',
     ];
 }

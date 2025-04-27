@@ -23,6 +23,7 @@ class AdminSeeder extends Seeder
                 'password'          =>  bcrypt('123456'),
                 'ho_ten'         =>  'Cảnh',
                 'so_dien_thoai'     =>  '0383565535',
+                'dia_chi'           =>  'Đà Nẵng',
                 'tinh_trang'        =>  1,
             ],
         ]);

@@ -11,9 +11,9 @@ return new class extends Migration
     {
         Schema::create('vi_tiens', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->unsignedBigInteger('taixe_id')->nullable();
-            $table->string("so_du");
+            $table->integer('user_id')->nullable();
+            $table->integer('taixe_id')->nullable();
+            $table->integer("so_du");
             $table->timestamps();
         });
     }

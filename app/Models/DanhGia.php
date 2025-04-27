@@ -8,6 +8,7 @@ class DanhGia extends Model
 {
     protected $table = 'danh_gias';
     protected $fillable = [
+        'danhgia_id',
         'id_khach',
         'id_taixe',
         'so_sao',

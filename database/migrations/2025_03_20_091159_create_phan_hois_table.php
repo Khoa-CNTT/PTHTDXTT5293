@@ -11,6 +11,8 @@ return new class extends Migration
     {
         Schema::create('phan_hois', function (Blueprint $table) {
             $table->id();
+            $table->integer("phanhoi_id");
+            $table->integer("admin_id");
             $table->string("noi_dung");
             $table->integer("trang_thai");
             $table->timestamps();

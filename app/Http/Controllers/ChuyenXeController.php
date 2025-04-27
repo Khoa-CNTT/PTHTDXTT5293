@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChiTietPhanQuyen;
 use App\Models\ChuyenXe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +11,7 @@ class ChuyenXeController extends Controller
 {
     public function getData()
     {
+
         $data = ChuyenXe::get();
         return response()->json([
             'data' => $data,
@@ -33,17 +35,12 @@ class ChuyenXeController extends Controller
         // Tạo chuyến xe mới
         $chuyenXe = ChuyenXe::create([
             'KhachHang_id'       => $Account_Login->id,
-            'TaiXe_id'           => $request->TaiXe_id,
-            'TaiXe'                 => $request->TaiXe,
-            'DiaDiemDon'         => $request->DiaDiemDon,
-            'DiaDiemDen'         => $request->DiaDiemDen,
+            'DiaDiemDon'         => json_encode($request->DiaDiemDon),
+            'DiaDiemDen'         => json_encode($request->DiaDiemDen),
             'LoaiXe'             => $request->LoaiXe,
             'GiaTien'            => $request->GiaTien,
-            'BienSo'            => $request->BienSo,
-            'SoKm'            => $request->SoKm,
-            'HinhThucThanhToan'  => $request->HinhThucThanhToan,
-            'ThoiGian'           => now(),
-            'TrangThai'          => 'Chờ xác nhận',
+            'SoKm'               => $request->SoKm,
+            'TrangThai'          => 0,
         ]);
 
         return response()->json([

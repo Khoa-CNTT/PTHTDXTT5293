@@ -16,8 +16,12 @@ class KhachHang extends Authenticatable
         'so_dien_thoai',
         'email',
         'dia_chi',
+        'hinh_anh',
         'password',
         'vi_tien',
+        'hash_reset',
         'trang_thai',
+        'is_active',
+        'is_block',
     ];
 }

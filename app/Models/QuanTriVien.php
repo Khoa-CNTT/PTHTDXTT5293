@@ -16,6 +16,7 @@ class QuanTriVien extends Authenticatable
         'ho_ten',
         'password',
         'email',
+        'dia_chi',
         'so_dien_thoai',
         'tinh_trang',
     ];

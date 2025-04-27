@@ -18,7 +18,6 @@ class ChuyenXe extends Model
         'DiaDiemDen',
         'LoaiXe',
         'GiaTien',
-        'ThoiGian',
         'BienSo',
         'SoKm',
         'DanhGia',

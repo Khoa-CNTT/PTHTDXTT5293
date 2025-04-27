@@ -10,18 +10,16 @@ return new class extends Migration
     {
         Schema::create('lich_su_nap_ruts', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id')->nullable(); // Khóa ngoại liên kết bảng users
+            $table->integer('user_id')->nullable();
             $table->integer('taixe_id')->nullable();
             $table->string('user_type')->nullable();
-            //$table->enum('user_type', ['khach_hang', 'tai_xe']); // Loại người dùng
-            $table->decimal('so_tien', 15, 2); // Số tiền chính xác
-            $table->string('loai_giao_dich'); // Loại giao dịch
+            $table->decimal('so_tien', 15, 2);
+            $table->string('loai_giao_dich');
             $table->string('ngan_hang')->nullable();
             $table->string('so_tai_khoan')->nullable();
-            $table->string('hinh_thuc')->nullable(); // Hình thức giao dịch (chuyển khoản, tiền mặt, v.v.)
-            $table->enum('trang_thai', ['chua_xac_nhan', 'da_xac_nhan', 'hoan_tat'])->default('chua_xac_nhan'); // Trạng thái (chưa xác nhận, đã xác nhận, hoàn tất)
-            //$table->integer('trang_thai'); // Trạng thái (0: chờ xử lý, 1: đã xử lý,...)
-            $table->timestamp('ngay_giao_dich')->nullable(); // Ngày giờ giao dịch
+            //$table->string('hinh_thuc')->nullable();
+            $table->integer('TrangThai')->default(0)->comment('0: Chưa xác nhận, 1: Đã xác nhận, 2: Hoàn thành');
+            $table->date('ngay_giao_dich')->nullable();
             $table->timestamps();
         });
     }

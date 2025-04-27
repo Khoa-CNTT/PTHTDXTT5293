@@ -10,6 +10,9 @@ use App\Models\KhachHang;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use App\Mail\MasterMail;
+use Illuminate\Support\Facades\Mail;
 
 class KhachHangController extends Controller
 {
@@ -123,8 +126,6 @@ class KhachHangController extends Controller
             'message' => 'Mật khẩu đã được thay đổi thành công!'
         ]);
     }
-    // quên mật khẩu
-    public function forgotPassword() {}
 
     // cập nhật tk
     public function updateAccount(CapNhatTaiKhoanKhangHangRequest $request)
@@ -167,7 +168,30 @@ class KhachHangController extends Controller
     }
 
     // kích hoạt tk khách hàng
-    public function activateAccount() {}
+    public function activateAccount(Request $request)
+    {
+        // nào làm phân quyền rồi bỏ cái này
+
+        // $login = Auth::guard('sanctum')->user();
+        // $khach_hang = KhachHang::where('id', $request->id)->first();
+
+        // if ($khach_hang) {
+        //     if ($khach_hang->is_active == 0) {
+        //         $khach_hang->is_active = 1;
+        //         $khach_hang->save();
+
+        //         return response()->json([
+        //             'status' => true,
+        //             'message' => "Đã kích hoạt tài khoản thành công!"
+        //         ]);
+        //     }
+        // } else {
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => "Có lỗi xảy ra!"
+        //     ]);
+        // }
+    }
     public function getDataProfile()
     {
         $Account_Login   = Auth::guard('sanctum')->user();
@@ -252,6 +276,49 @@ class KhachHangController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => "Có lỗi xảy ra khi xóa tài khoản!"
+            ]);
+        }
+    }
+    public function getAvatar(Request $request)
+    {
+        $user = Auth::guard('sanctum')->user();
+        $data = $request->all();
+        $file = $data['hinh_anh'];
+        //$file_name = $file->getClientOriginalName(); // lay ten file
+        $file_extension = $file->getClientOriginalExtension();
+        $file_name = Str::slug($user->ho_ten) . "."  . $file_extension;
+        $cho_luu = "KhachHangAVT\\" . $file_name;
+        $file->move("KhachHangAVT", $file_name);
+        $hinh_anh = "http://127.0.0.1:8000/" . $cho_luu;
+
+        KhachHang::find($user->id)->update([
+            'hinh_anh' => $hinh_anh
+        ]);
+        return response()->json([
+            'status'    =>  true,
+            'message'   =>  'Đã đổi ảnh đại diện thành công'
+        ]);
+    }
+
+    // quên mk
+    public function forgotPassword(Request $request)
+    {
+        $khach_hang = KhachHang::where('email', $request->email)->first();
+        if ($khach_hang) {
+            $hash_reset         = Str::uuid();
+            $x['ho_ten']     = $khach_hang->ho_ten;
+            $x['link']          = 'http://localhost:5173/khach-hang/doi-mat-khau/' . $hash_reset;
+            Mail::to($request->email)->send(new MasterMail('Đổi Mật Khẩu Của Bạn', 'quen_mat_khau', $x));
+            $khach_hang->hash_reset = $hash_reset;
+            $khach_hang->save();
+            return response()->json([
+                'status'    =>  true,
+                'message'   =>  'Vui Lòng kiểm tra lại email'
+            ]);
+        } else {
+            return response()->json([
+                'status'    =>  false,
+                'message'   =>  'Email không có trong hệ thống'
             ]);
         }
     }

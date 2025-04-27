@@ -18,7 +18,17 @@ class MaGiamGiaController extends Controller
         ]);
     }
 
-    public function getDataOpen() {}
+    public function getDataOpen()
+    {
+        $data = MaGiamGia::where('tinh_trang', 1)
+            ->whereDate('ngay_bat_dau', "<=", Carbon::today())
+            ->whereDate('ngay_het_han', ">=", Carbon::today())
+            ->get();
+
+        return response()->json([
+            'data'      => $data
+        ]);
+    }
 
     // Kiểm tra mã giảm giá
     public function checkCode(Request $request)
