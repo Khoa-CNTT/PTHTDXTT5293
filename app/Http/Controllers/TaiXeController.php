@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CapNhatTaiKhoanTaiXeRequest;
 use App\Http\Requests\TaiXeDangKyRequest;
 use App\Http\Requests\TaiXeDangNhapRequest;
+use App\Http\Requests\TaiXeDoiMatKhauRequest;
 use App\Models\TaiXe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class TaiXeController extends Controller
 {
@@ -44,7 +47,7 @@ class TaiXeController extends Controller
     }
 
     // đăng ký
-    public function registerDriver(Request $request)
+    public function registerDriver(TaiXeDangKyRequest $request)
     {
         $TaiXe = TaiXe::create([
             'ho_ten'        => $request->ho_ten,
@@ -85,22 +88,26 @@ class TaiXeController extends Controller
     }
 
     // update  tài xế ( profile)
-    public function updateAcount(Request $request)
+    public function updateAcount(CapNhatTaiKhoanTaiXeRequest $request)
     {
-        $TaiXe = TaiXe::find($request->id)->update([
-            'ho_ten'                => $request->ho_ten,
-            'so_dien_thoai'         => $request->so_dien_thoai,
-            'email'                 => $request->email,
-            'cccd'                  => $request->cccd,
-            'loai_xe'               => $request->loai_xe,
-            'bien_so'               => $request->bien_so,
-            'bang_lai_xe'           => $request->bang_lai_xe,
-            'dia_chi'           => $request->dia_chi,
-            'ngan_hang'            => $request->ngan_hang,
-        ]);
+        $Account_Login   = Auth::guard('sanctum')->user();
+        if (!$Account_Login) {
+            return response()->json([
+                'status'  => false,
+                'message' => "Người dùng không tồn tại!"
+            ]);
+        }
+
+        // Lấy dữ liệu cần cập nhật
+        $updateData = $request->only(['ho_ten', 'so_dien_thoai', 'email', 'dia_chi', 'cccd', 'loai_xe', 'bien_so', 'bang_lai_xe', 'ngan_hang']);
+
+        // Thực hiện cập nhật
+        $Account_Login->update($updateData);
+
         return response()->json([
-            'status' => true,
-            'message' => "Đã update tài xế" . $request->ho_ten . " thành công.",
+            'status'  => true,
+            'message' => "Đã cập nhật tài khoản thành công!",
+            'user'    => $Account_Login
         ]);
     }
 
@@ -135,7 +142,7 @@ class TaiXeController extends Controller
         ]);
     }
     // đổi mật khẩu
-    public function changePassword(Request $request)
+    public function changePassword(TaiXeDoiMatKhauRequest $request)
     {
         // kiểm tra tk đăng nhập
         $Account_Login = Auth::guard('sanctum')->user();
