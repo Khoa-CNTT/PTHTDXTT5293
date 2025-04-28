@@ -85,13 +85,46 @@ class ChuyenXeController extends Controller
 
         // Cập nhật thông tin tài xế nhận chuyến xe
         $chuyenXe->TaiXe_id = $taiXe->id;
-        $chuyenXe->TrangThai = 'Đang thực hiện';
+        $chuyenXe->TrangThai = 1;
         $chuyenXe->save();
 
         return response()->json([
             'status' => true,
             'message' => 'Bạn đã nhận chuyến xe thành công!',
             'data' => $chuyenXe,
+        ]);
+    }
+    // lích sử chuyến xe
+    public function lichSuChuyenXe(Request $request)
+    {
+        $user = Auth::guard('sanctum')->user();
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bạn chưa đăng nhập!.',
+            ]);
+        }
+
+        $dsChuyenXe = ChuyenXe::where('TaiXe_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Format lại dữ liệu để gửi về FE
+        $data = $dsChuyenXe->map(function ($request) {
+            return [
+                'DiaDiemDon'         => $request->DiaDiemDon,
+                'DiaDiemDen'         => $request->DiaDiemDen,
+                'LoaiXe'             => $request->LoaiXe,
+                'GiaTien'            => $request->GiaTien,
+                'TrangThai'          => 0,
+                'SoKm'               => $request->SoKm,
+                'HinhThucThanhToan'  => $request->HinhThucThanhToan,
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
         ]);
     }
 
@@ -142,6 +175,13 @@ class ChuyenXeController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Không tìm thấy đơn hàng.',
+            ]);
+        }
+        // Kiểm tra xem chuyến xe đã được tài xế nhận chưa
+        if ($don->TaiXe_id !== null) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Chuyến xe đã được tài xế nhận, không thể hủy.',
             ]);
         }
 
@@ -251,32 +291,32 @@ class ChuyenXeController extends Controller
         ]);
     }
 
-    // xác nhận đơn đặt xe
-    public function acceptOrder(Request $request)
-    {
-        $user = Auth::guard('sanctum')->user();
+    // xác nhận đơn đặt xe - dự bị cho chức năng NhanChuyenXe nếu chạy k đc
+    // public function acceptOrder(Request $request)
+    // {
+    //     $user = Auth::guard('sanctum')->user();
 
-        $don = ChuyenXe::where('id', $request->id)
-            ->whereNull('TaiXe_id')
-            ->where('TrangThai', 'Chờ xác nhận')
-            ->first();
+    //     $don = ChuyenXe::where('id', $request->id)
+    //         ->whereNull('TaiXe_id')
+    //         ->where('TrangThai', 'Chờ xác nhận')
+    //         ->first();
 
-        if (!$don) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Không thể nhận đơn này.'
-            ]);
-        }
+    //     if (!$don) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Không thể nhận đơn này.'
+    //         ]);
+    //     }
 
-        $don->TaiXe_id = $user->id;
-        $don->TrangThai = 'Đang hoạt động';
-        $don->save();
+    //     $don->TaiXe_id = $user->id;
+    //     $don->TrangThai = 'Đang hoạt động';
+    //     $don->save();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Đã nhận đơn thành công.'
-        ]);
-    }
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Đã nhận đơn thành công.'
+    //     ]);
+    // }
 
 
     //------------quản lý đơn hàng - khách hàng----------------------------
@@ -325,7 +365,7 @@ class ChuyenXeController extends Controller
             ->where('KhachHang_id', $user->id)
             ->first();
 
-        if (!$don || $don->TrangThai !== 'Chờ xác nhận') {
+        if (!$don || $don->TrangThai !== 0) {
             return response()->json([
                 'status' => false,
                 'message' => 'Không thể hủy đơn này.'
