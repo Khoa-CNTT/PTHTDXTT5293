@@ -31,7 +31,6 @@ class ChuyenXeController extends Controller
                 'message' => 'Khách hàng chưa đăng nhập hoặc session không hợp lệ.',
             ]);
         }
-
         // Tạo chuyến xe mới
         $chuyenXe = ChuyenXe::create([
             'KhachHang_id'       => $Account_Login->id,
