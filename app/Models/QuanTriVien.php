@@ -19,5 +19,7 @@ class QuanTriVien extends Authenticatable
         'dia_chi',
         'so_dien_thoai',
         'tinh_trang',
+        'id_chuc_vu',
+        'is_master',
     ];
 }

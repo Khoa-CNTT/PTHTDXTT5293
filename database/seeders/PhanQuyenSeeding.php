@@ -24,8 +24,14 @@ class PhanQuyenSeeding extends Seeder
             ],
             [
                 'id'             =>  2,
-                'ten_quyen'      =>  'Nhân Viên',
+                'ten_quyen'      =>  'Nhân Viên ',
             ],
+            [
+                'id'             =>  3,
+                'ten_quyen'      =>  'Nhân Viên quản lý tài xế',
+            ],
+
+
         ]);
     }
 }

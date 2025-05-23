@@ -17,6 +17,7 @@ use App\Models\ChuyenXe;
 use App\Models\LichSuNapRut;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ThongKeController;
 
 // ------------------------Khách hàng---------------------------------------------
 Route::get('/kiem-tra-tai-khoan-khach-hang', [KhachHangController::class, 'checkCustomer']);
@@ -62,7 +63,7 @@ Route::post('/admin/nhan-vien/update', [QuanTriVienController::class, 'update'])
 Route::post('/admin/nhan-vien/doi-trang-thai', [QuanTriVienController::class, 'changeStatus'])->middleware("AdminMiddle");
 
 Route::get('/admin/chuc-nang/data', [ChucNangController::class, 'getData'])->middleware("AdminMiddle");
-Route::post('/admin/chi-tiet-phan-quyen/cap-quyen', [ChiTietPhanQuyenController::class, 'capQuyen'])->middleware("AdminMiddle");
+Route::post('/admin/chi-tiet-phan-quyen/cap-nhieu-quyen', [ChiTietPhanQuyenController::class, 'capNhieuQuyen'])->middleware("AdminMiddle");
 Route::post('/admin/chi-tiet-phan-quyen/danh-sach', [ChiTietPhanQuyenController::class, 'getData'])->middleware("AdminMiddle");
 Route::post('/admin/chi-tiet-phan-quyen/xoa-quyen', [ChiTietPhanQuyenController::class, 'xoaQuyen'])->middleware("AdminMiddle");
 
@@ -122,3 +123,6 @@ Route::post('/admin/ma-giam-gia/doi-trang-thai', [MaGiamGiaController::class, 'c
 Route::post('/tai-xe/xoa-lich-xu-giao-dich', [LichSuNapTienController::class, 'deleteGiaoDich'])->middleware("AdminMiddle");
 Route::post('/tai-xe/cap-nhat-trang-thai-giao-dich', [LichSuNapTienController::class, 'updateStatus'])->middleware("AdminMiddle");
 Route::get('/admin/lich-su-nap-rut/data', [LichSuNapTienController::class, 'getAllHistoryForAdmin'])->middleware("AdminMiddle");
+
+// ------------------------Thống kê---------------------------------------------
+Route::get('admin/thong-ke/data', [ThongKeController::class, 'getData']);

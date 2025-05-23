@@ -232,7 +232,7 @@ class LichSuNapTienController extends Controller
     public function getAllHistoryForAdmin(Request $request)
     {
         // Lấy người dùng từ guard 'admin'
-        $admin = Auth::guard('admin')->user();
+        $admin = $this->isAdmin();
 
         // Kiểm tra nếu admin không đăng nhập
         if (!$admin) {
@@ -243,8 +243,8 @@ class LichSuNapTienController extends Controller
         }
 
         // Lấy tất cả lịch sử nạp rút tiền kèm thông tin tài xế
-        $lichSuNaps = LichSuNapRut::select('lich_su_nap_rut.*', 'taixe.ho_ten as ten_tai_xe', 'taixe.email as email_tai_xe', 'taixe.so_dien_thoai as sdt_tai_xe')
-            ->leftJoin('taixe', 'lich_su_nap_rut.taixe_id', '=', 'taixe.id')
+        $lichSuNaps = LichSuNapRut::select('lich_su_nap_ruts.*', 'tai_xes.ho_ten as ten_tai_xe', 'tai_xes.email as email_tai_xe', 'tai_xes.so_dien_thoai as sdt_tai_xe')
+            ->leftJoin('tai_xes', 'lich_su_nap_ruts.taixe_id', '=', 'tai_xes.id')
             ->orderBy('ngay_giao_dich', 'desc') // Sắp xếp theo ngày giao dịch mới nhất
             ->get();
 

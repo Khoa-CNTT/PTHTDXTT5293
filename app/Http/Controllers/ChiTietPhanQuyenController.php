@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Auth;
 
 class ChiTietPhanQuyenController extends Controller
 {
-    public function capQuyen(Request $request)
+    public function capNhieuQuyen(Request $request)
     {
 
         $chuc_nang_id = 35;
         $Account_Login = Auth::guard('sanctum')->user();
-        $quyen_id = $$Account_Login->$chuc_nang_id;
+        $quyen_id = $Account_Login->$chuc_nang_id;
         $check_quyen = ChiTietPhanQuyen::where('quyen_id', $quyen_id)
             ->where('chuc_nang_id', $chuc_nang_id)
             ->first();
@@ -24,24 +24,34 @@ class ChiTietPhanQuyenController extends Controller
             ]);
         }
 
-        $quyen = ChiTietPhanQuyen::where('quyen_id', $request->quyen_id)
-            ->where('chuc_nang_id', $request->chuc_nang_id)
-            ->first();
+        $idChucVu = $request->id_quyen;
+        $danhSachQuyenMoi = $request->list_id_chuc_nang;
 
-        if ($quyen) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Quyền đã tồn tại!',
+        // Lấy danh sách quyền cũ
+        $quyenCu = ChiTietPhanQuyen::where('quyen_id', $idChucVu)->pluck('chuc_nang_id')->toArray();
+
+        // Xác định quyền cần xóa (có trong cũ nhưng không có trong mới)
+        $quyenCanXoa = array_diff($quyenCu, $danhSachQuyenMoi);
+        if (!empty($quyenCanXoa)) {
+            ChiTietPhanQuyen::where('quyen_id', $idChucVu)
+                ->whereIn('chuc_nang_id', $quyenCanXoa)
+                ->delete();
+        }
+
+        // Xác định quyền cần thêm (có trong mới nhưng không có trong cũ)
+        $quyenCanThem = array_diff($danhSachQuyenMoi, $quyenCu);
+        $data = [];
+        foreach ($quyenCanThem as $idChucNang) {
+            $data[] = ChiTietPhanQuyen::create([
+                'quyen_id'  => $idChucVu,
+                'chuc_nang_id'  => $idChucNang,
             ]);
         }
 
-        ChiTietPhanQuyen::create([
-            'quyen_id'      => $request->quyen_id,
-            'chuc_nang_id'  => $request->chuc_nang_id,
-        ]);
         return response()->json([
-            'status'    =>  true,
-            'message'   =>  'Đã phân quyền thành công!'
+            'status'    => true,
+            'message'   => 'Cập nhật phân quyền thành công!',
+            'data'      => $data
         ]);
     }
 
@@ -63,7 +73,7 @@ class ChiTietPhanQuyenController extends Controller
 
         $data   = ChiTietPhanQuyen::join('chuc_nangs', 'chi_tiet_phan_quyens.chuc_nang_id', 'chuc_nangs.id')
             ->join('phan_quyens', 'chi_tiet_phan_quyens.quyen_id', 'phan_quyens.id')
-            ->where('chi_tiet_phan_quyens.quyen_id', $request->quyen_id)
+            ->where('chi_tiet_phan_quyens.quyen_id', $request->id_quyen)
             ->select('chi_tiet_phan_quyens.*', 'chuc_nangs.ten_chuc_nang', 'phan_quyens.ten_quyen')
             ->get();
 

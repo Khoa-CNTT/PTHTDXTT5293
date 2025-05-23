@@ -10,5 +10,6 @@ class PhanQuyen extends Model
 
     protected $fillable = [
         'ten_quyen',
+        'trang_thai',
     ];
 }

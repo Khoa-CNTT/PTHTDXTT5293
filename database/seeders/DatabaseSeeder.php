@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
             TaiXeSeeding::class,
             ChiTietPhanQuyenSeeding::class,
             ChucNangSeeding::class,
-            PhanQuyenSeeding::class
+            PhanQuyenSeeding::class,
+            LichSuRutTienSeeder::class,
         ]);
         // User::factory(10)->create();
 

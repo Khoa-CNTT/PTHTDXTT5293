@@ -25,6 +25,39 @@ class KhachHangSeeding extends Seeder
                 'trang_thai'     =>  1,
                 'dia_chi'   => 'quảng nam'
             ],
+            [
+                'ho_ten'     =>  'Lê',
+                'email'         =>  'le24@gmail.com',
+                'so_dien_thoai' =>  '0123456789',
+                'password'      =>  bcrypt('123456'),
+                'trang_thai'     =>  1,
+                'dia_chi'   => 'quảng nam'
+            ],
+            [
+                'ho_ten'     =>  'Lưu',
+                'email'         =>  'luu24@gmail.com',
+                'so_dien_thoai' =>  '0123456789',
+                'password'      =>  bcrypt('123456'),
+                'trang_thai'     =>  1,
+                'dia_chi'   => 'quảng nam'
+            ],
+            [
+                'ho_ten'     =>  'Lann',
+                'email'         =>  'lan24@gmail.com',
+                'so_dien_thoai' =>  '0123456789',
+                'password'      =>  bcrypt('123456'),
+                'trang_thai'     =>  1,
+                'dia_chi'   => 'quảng nam'
+            ],
+            [
+                'ho_ten'     =>  'Lann',
+                'email'         =>  'lan25@gmail.com',
+                'so_dien_thoai' =>  '0123456789',
+                'password'      =>  bcrypt('123456'),
+                'trang_thai'     =>  1,
+                'dia_chi'   => 'quảng nam'
+            ],
+
         ]);
     }
 }

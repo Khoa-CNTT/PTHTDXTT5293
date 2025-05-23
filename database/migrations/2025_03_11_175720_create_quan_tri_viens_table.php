@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('email');
             $table->string('dia_chi');
             $table->string('so_dien_thoai');
-            $table->integer('tinh_trang');
+            $table->integer('tinh_trang')->default(1);
+            $table->integer('id_chuc_vu');
+            $table->integer('is_master')->default(0);
             $table->timestamps();
         });
     }
