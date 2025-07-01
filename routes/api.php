@@ -44,6 +44,7 @@ Route::post('/khach-hang/huy-don', [ChuyenXeController::class, 'deleteOrder'])->
 
 Route::get('/khach-hang/lich-su-don-hang', [ChuyenXeController::class, 'lichSuKhachHang'])->middleware("KhachHangMiddle");
 Route::post('/khach-hang/thanh-toan', [ThanhToanController::class, 'Pay'])->middleware("KhachHangMiddle");
+Route::get('/khach-hang/chuyen-xe', [ChuyenXeController::class, 'chuyenXeKhachHang'])->middleware("KhachHangMiddle");
 
 
 //----------------------------- Admin -----------------------------------------

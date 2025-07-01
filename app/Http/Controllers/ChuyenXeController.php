@@ -437,4 +437,26 @@ class ChuyenXeController extends Controller
             'data' => $data,
         ]);
     }
+
+    // chuyến xe khách hàng
+    public function chuyenXeKhachHang(Request $request)
+    {
+        $user = Auth::guard('sanctum')->user();
+        $don = ChuyenXe::where('KhachHang_id', $user->id)
+                        ->where('TrangThai', 0)
+                        ->orderBy('id', 'desc')
+                        ->first();
+
+        if (!$don) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Không tìm thấy đơn này.'
+            ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $don
+        ]);
+    }
 }
